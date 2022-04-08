@@ -1,5 +1,8 @@
 import random
 
+# CONSTRUCT VOWEL LIST
+vowel_list = ['a', 'e', 'i', 'o', 'u']
+
 def getWord():
     with open('words.txt', 'r') as f:
         return random.choice(f.readlines()).strip()
@@ -24,6 +27,33 @@ def spinWheel():
         return -1 # BANKRUPT
     else:
         return -2 # LOSE A TURN
+
+def guessALetter(correct_word, display_list, vowel):
+    
+    # GET INPUT 
+    while True:
+        try:
+            guess = input("Guess a letter: ").strip()
+        except ValueError:
+            print("Please guess a letter")
+        else:
+            if len(guess) > 1:
+                print("You must guess a single letter")
+            elif not vowel and guess in vowel_list:
+                print("Nice try, but you have to guess a consonant")
+            elif vowel and guess not in vowel_list:
+                print("Please guess a vowel... You paid for it...")
+            else:
+                break # VALID LETTER
+
+    # CHECK IF GUESS IS IN WORD
+    guess_in_word = False
+    for i,v in enumerate(correct_word):
+        if v == guess:
+            guess_in_word = True
+            display_list[i] = guess
+
+    return guess_in_word
 
 
 # BUILD PLAYER DICT W PLAYER ID AND ROUND TOTAL AND GAME TOTAL SET TO ZERO
@@ -64,10 +94,36 @@ for i in range(1,4): # ITERATE THROUGH ROUND 1-3
             except ValueError:
                 print("Please give a valid input")
             else:
-                if option_num == 1:
-                    print(spinWheel())
-                elif option_num == 2:
-                    print("BuyAVowel()")
+                if option_num == 1: # SPIN WHEEL
+                    print("Spinning...")
+                    outcome = spinWheel()
+                    if outcome == -1: # BANKRUPT
+                        player_dict[current_player_id][0] = 0
+                        print("You went bankrupt")
+                        break
+                    elif outcome == -2: # LOSE A TURN
+                        print("You lost a turn")
+                        break
+                    else: # GOT MONEY 
+                        player_dict[current_player_id][0] += outcome
+                        print(f"You recieved ${outcome}")
+
+                    if not guessALetter(correct_word, display_list, vowel=False):
+                        print("That letter was not on the board")
+                        break
+                    print("That letter was correct")
+
+                elif option_num == 2: # BUY A VOWEL
+                    """
+                    if player_dict[current_player_id][0] - 250 > 0:
+                        print("Alright, you're buying a vowel")
+                        player_dict[current_player_id][0] -= 250
+                        if not guessALetter(correct_word, display_word, guess):
+                            break
+                    else:
+                        print("You can't buy a vowel right now")
+                    """
+
                 elif option_num == 3: # GUESS WORD
                     
                     # GET PLAYER GUESS
@@ -75,13 +131,13 @@ for i in range(1,4): # ITERATE THROUGH ROUND 1-3
 
                     # CHECK GUESS
                     if guess == correct_word: # GUESSED CORRECTLY
-                        print(f"You guessed correctly. 
-                                You just earned ${player_dict[current_player_id[0]}")
+                        print(f"You guessed correctly. You just earned ${player_dict[current_player_id][0]}")
                         player_dict[current_player_id][1] += player_dict[current_player_id][0]
                         word_guessed = True
                     else: # GUESS WAS INCORRECT
                         print("That was incorrect")
+                    break
+
                 else:
                     print("Please enter either '1', '2' or '3'")
-            break
         current_player_id = current_player_id + 1 if current_player_id <= 2 else 1
