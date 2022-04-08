@@ -1,25 +1,31 @@
+function SpinWheel()
+	choose outcome
+
 function GuessLetters(current_player)
-	
+	player input parsing and checking	
 
 for each round
-	while round in progess:
-		choice = player input
-		if choice is spin the wheel
-			SpinWheel()
-			guess consonant
-			if incorrect
-				break
-			else
-				ajust display word
-		if choice is buy vowel
-			check bank account
-			-250 from bank account
-			guess vowel
-			if incorrect
-				break
-			else
-				adjust display word
-		if choice is guessword
-			guess word
-			if incorrect
+	while round in progress:
+		while turn in progess:
+			choice = player input
+			if choice is spin the wheel
+				SpinWheel()
+				guess consonant
+				if incorrect
+					break
+				else
+					ajust display word
+			if choice is buy vowel
+				check bank account
+				-250 from bank account
+				guess vowel
+				if incorrect
+					break
+				else
+					adjust display word
+			if choice is guessword
+				guess word
+				if incorrect
+					break
+		change player
 					
