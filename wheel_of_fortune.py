@@ -65,6 +65,13 @@ def printMenu(correct_word, display_list, player_dict):
     print(f"|  ${str(player_dict[1][0]).zfill(5)}  |  ${str(player_dict[2][0]).zfill(5)}  |  ${str(player_dict[3][0]).zfill(5)}  |") 
     print("1. Spin the wheel - 2. Buy a vowel - 3. Guess a word")
 
+def printRound3Menu(correct_word, display_list):
+
+    # DISPLAY ROUND 3 VISUAL
+    print("**" + ("*" * (len(correct_word)+2)) + "**")
+    print("** " + "".join(display_list) + " **")
+    print("**" + ("*" * (len(correct_word)+2)) + "**")
+    print("1. Guess Consonant - 2. Guess Vowel - 3. Guess the word")
 
 
 # BUILD PLAYER DICT W PLAYER ID AND ROUND TOTAL AND GAME TOTAL SET TO ZERO
@@ -182,23 +189,49 @@ for i in range(1,4): # ITERATE THROUGH ROUND 1-3
             elif v == "e":
                 display_list[i] = "e"
 
-        print("You can guess 3 consonants")
-        for i in range(3):
-            print("**" + ("*" * (len(correct_word)+2)) + "**")
-            print("** " + "".join(display_list) + " **")
-            print("**" + ("*" * (len(correct_word)+2)) + "**")
-            guessALetter(correct_word, display_list, vowel=False)
+        print("You can guess up to 3 consonants and 1 vowel. Some of the letters have already been revealed for you.")
 
-        print("You can guess 1 vowel")
-        print("**" + ("*" * (len(correct_word)+2)) + "**")
-        print("** " + "".join(display_list) + " **")
-        print("**" + ("*" * (len(correct_word)+2)) + "**")
-        guessALetter(correct_word, display_list, vowel=True)
+        allowed_consonants = 3
+        allowed_vowels = 1
 
-        guess = input("Guess the final word: ").strip()
+        while True:
 
-        if guess == correct_word:
-            print("YOU JUST WON $8 TRILLION! CONGRATS")
-        else:
-            print("You did not win the final cash prize")
+            try:
+                printRound3Menu(correct_word, display_list)
+                option_num = int(input("Please choose an option: ")) 
+            except ValueError:
+                print("Please choose a valid option")
+            else:
+                if option_num == 1: # GUESS A CONSONANT
+                    
+                    if allowed_consonants > 0:
+                        allowed_consonants -= 1
+                        if guessALetter(correct_word, display_list, vowel=False):
+                            print("That letter was in the word")
+                        else:
+                            print("That letter was not in the word")
+                    else:
+                        print("You can't guess anymore consonants")
+
+                elif option_num == 2: # GUESS A VOWEL
+
+                    if allowed_vowels > 0:
+                        allowed_vowels -= 1
+                        if guessALetter(correct_word, display_list, vowel=True):
+                            print("That letter was in the word")
+                        else:
+                            print("That letter was not in the word")
+                    else:
+                        print("You can't guess anymore vowels")
+
+                elif option_num == 3: # GUESS FINAL WORD
+
+                    guess = input("Guess the final word: ").strip()
+                    if guess == correct_word:
+                        print("YOU JUST WON $8 TRILLION! CONGRATS")
+                    else:
+                        print("You did not win the final cash prize")
+                    break
+                else:
+                    print("Please choose a valid option")
 
