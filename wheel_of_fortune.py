@@ -57,8 +57,10 @@ def guessALetter(correct_word, display_list, vowel):
 
 
 # BUILD PLAYER DICT W PLAYER ID AND ROUND TOTAL AND GAME TOTAL SET TO ZERO
-player_dict = dict.fromkeys(range(1,4), [0,0])
-print(player_dict)
+player_dict = {}
+player_dict[1] = [0,0]
+player_dict[2] = [0,0]
+player_dict[3] = [0,0]
 
 for i in range(1,4): # ITERATE THROUGH ROUND 1-3
    
@@ -70,11 +72,13 @@ for i in range(1,4): # ITERATE THROUGH ROUND 1-3
 
     # SET INITIAL ROUND VALUES FOR EACH ROUND
     player_dict[1][0] = 0 
-    player_dict[1][0] = 0
-    player_dict[1][0] = 0
+    player_dict[2][0] = 0
+    player_dict[3][0] = 0
 
     # INITALIZE CURRENT PLAYER
     current_player_id = 1
+
+    print(f"------ ROUND {i} ------")
 
     word_guessed = False
     while not word_guessed: # LOOP OVER EACH PLAYER
@@ -84,17 +88,18 @@ for i in range(1,4): # ITERATE THROUGH ROUND 1-3
         while True: # LOOP OVER EACH ACTION
             try:    
                 # DISPLAY VISUAL AND MENU
-                print("|" + ("-" * (len(correct_word)+2)) + "|")
-                print("| " + "".join(display_list) + " |")
-                print("|" + ("-" * (len(correct_word)+2)) + "|")
-                print("1. Spin the wheel")
-                print("2. Buy a vowel")
-                print("3. Guess a word")
+                print("**" + ("*" * (len(correct_word)+2)) + "**")
+                print("** " + "".join(display_list) + " **")
+                print("**" + ("*" * (len(correct_word)+2)) + "**")
+                print("| Player 1 | Player 2 | Player 3 |")
+                print(f"|  ${str(player_dict[1][0]).zfill(5)}  |  ${str(player_dict[2][0]).zfill(5)}  |  ${str(player_dict[3][0]).zfill(5)}  |") 
+                print("1. Spin the wheel - 2. Buy a vowel - 3. Guess a word")
                 option_num = int(input("Please select an option: "))
             except ValueError:
                 print("Please give a valid input")
             else:
                 if option_num == 1: # SPIN WHEEL
+
                     print("Spinning...")
                     outcome = spinWheel()
                     if outcome == -1: # BANKRUPT
@@ -114,15 +119,16 @@ for i in range(1,4): # ITERATE THROUGH ROUND 1-3
                     print("That letter was correct")
 
                 elif option_num == 2: # BUY A VOWEL
-                    """
+
                     if player_dict[current_player_id][0] - 250 > 0:
                         print("Alright, you're buying a vowel")
                         player_dict[current_player_id][0] -= 250
-                        if not guessALetter(correct_word, display_word, guess):
+                        if not guessALetter(correct_word, display_list, vowel=True):
+                            print("That letter was not on the board")
                             break
+                        print("That letter was correct")
                     else:
                         print("You can't buy a vowel right now")
-                    """
 
                 elif option_num == 3: # GUESS WORD
                     
