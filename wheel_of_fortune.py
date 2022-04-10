@@ -4,7 +4,7 @@ import random
 vowel_list = ['a', 'e', 'i', 'o', 'u']
 
 def getWord():
-    with open('words.txt', 'r') as f:
+    with open('phrases.txt', 'r') as f:
         return random.choice(f.readlines()).strip()
 
 def spinWheel():
@@ -80,13 +80,16 @@ player_dict[1] = [0,0]
 player_dict[2] = [0,0]
 player_dict[3] = [0,0]
 
-for i in range(1,4): # ITERATE THROUGH ROUND 1-3
+for round_num in range(1,4): # ITERATE THROUGH ROUND 1-3
    
     # GET TARGET WORD FOR THE ROUND
     correct_word = getWord()
 
     # BUILD DISPLAY
     display_list = ['_'] * len(correct_word)
+    for i,v in enumerate(correct_word):
+        if v == " ":
+            display_list[i] = " "
 
     # SET INITIAL ROUND VALUES FOR EACH ROUND
     player_dict[1][0] = 0 
@@ -98,70 +101,69 @@ for i in range(1,4): # ITERATE THROUGH ROUND 1-3
 
     print(correct_word)
 
-    print(f"------ ROUND {i} ------")
+    print(f"------ ROUND {round_num} ------")
 
-    if i != 3: # ROUND 1 AND 2
+    if round_num != 3: # ROUND 1 AND 2
 
         word_guessed = False
         while not word_guessed: # LOOP OVER EACH PLAYER
             
             print(f"It's Player {current_player_id}'s turn")
-            if i != 3: 
-                while True: # LOOP OVER EACH ACTION
-                    try:    
-                        printMenu(correct_word, display_list, player_dict)
-                        option_num = int(input("Please select an option: "))
-                    except ValueError:
-                        print("Please give a valid input")
-                    else:
-                        if option_num == 1: # SPIN WHEEL
+            while True: # LOOP OVER EACH ACTION
+                try:    
+                    printMenu(correct_word, display_list, player_dict)
+                    option_num = int(input("Please select an option: "))
+                except ValueError:
+                    print("Please give a valid input")
+                else:
+                    if option_num == 1: # SPIN WHEEL
 
-                            print("Spinning...")
-                            outcome = spinWheel()
-                            if outcome == -1: # BANKRUPT
-                                player_dict[current_player_id][0] = 0
-                                print("You went bankrupt")
-                                break
-                            elif outcome == -2: # LOSE A TURN
-                                print("You lost a turn")
-                                break
-                            else: # GOT MONEY 
-                                player_dict[current_player_id][0] += outcome
-                                print(f"You recieved ${outcome}")
+                        print("Spinning...")
+                        outcome = spinWheel()
+                        if outcome == -1: # BANKRUPT
+                            player_dict[current_player_id][0] = 0
+                            print("You went bankrupt")
+                            break
+                        elif outcome == -2: # LOSE A TURN
+                            print("You lost a turn")
+                            break
+                        else: # GOT MONEY 
+                            player_dict[current_player_id][0] += outcome
+                            print(f"You recieved ${outcome}")
 
-                            if not guessALetter(correct_word, display_list, vowel=False):
+                        if not guessALetter(correct_word, display_list, vowel=False):
+                            print("That letter was not on the board")
+                            break
+                        print("That letter was correct")
+
+                    elif option_num == 2: # BUY A VOWEL
+
+                        if player_dict[current_player_id][0] - 250 > 0:
+                            print("Alright, you're buying a vowel")
+                            player_dict[current_player_id][0] -= 250
+                            if not guessALetter(correct_word, display_list, vowel=True):
                                 print("That letter was not on the board")
                                 break
                             print("That letter was correct")
-
-                        elif option_num == 2: # BUY A VOWEL
-
-                            if player_dict[current_player_id][0] - 250 > 0:
-                                print("Alright, you're buying a vowel")
-                                player_dict[current_player_id][0] -= 250
-                                if not guessALetter(correct_word, display_list, vowel=True):
-                                    print("That letter was not on the board")
-                                    break
-                                print("That letter was correct")
-                            else:
-                                print("You can't buy a vowel right now")
-
-                        elif option_num == 3: # GUESS WORD
-                            
-                            # GET PLAYER GUESS
-                            guess = input("Guess the word: ").strip()
-
-                            # CHECK GUESS
-                            if guess == correct_word: # GUESSED CORRECTLY
-                                print(f"You guessed correctly. You just earned ${player_dict[current_player_id][0]}")
-                                player_dict[current_player_id][1] += player_dict[current_player_id][0]
-                                word_guessed = True
-                            else: # GUESS WAS INCORRECT
-                                print("That was incorrect")
-                            break
-
                         else:
-                            print("Please enter either '1', '2' or '3'")
+                            print("You can't buy a vowel right now")
+
+                    elif option_num == 3: # GUESS WORD
+                        
+                        # GET PLAYER GUESS
+                        guess = input("Guess the word: ").strip()
+
+                        # CHECK GUESS
+                        if guess == correct_word: # GUESSED CORRECTLY
+                            print(f"You guessed correctly. You just earned ${player_dict[current_player_id][0]}")
+                            player_dict[current_player_id][1] += player_dict[current_player_id][0]
+                            word_guessed = True
+                        else: # GUESS WAS INCORRECT
+                            print("That was incorrect")
+                        break
+
+                    else:
+                        print("Please enter either '1', '2' or '3'")
 
             current_player_id = current_player_id + 1 if current_player_id <= 2 else 1
 
