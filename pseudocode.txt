@@ -1,8 +1,11 @@
 function SpinWheel()
-	choose outcome
+	choose outcome based on wheel probabilities
 
 function GuessLetters(current_player)
 	player input parsing and checking	
+	include vowel checking options 	
+
+player_dictionary is dictionary of player id and list of current and total bank balance
 
 for each round
 	while round in progress:
